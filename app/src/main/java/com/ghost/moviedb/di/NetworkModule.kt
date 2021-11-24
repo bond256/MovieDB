@@ -1,6 +1,7 @@
 package com.ghost.moviedb.di
 
 import com.ghost.moviedb.network.AuthInterceptor
+import com.ghost.moviedb.network.api.GetMovieApi
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import dagger.Module
 import dagger.Provides
@@ -25,14 +26,17 @@ class NetworkModule {
             .build()
     }
 
+    @Singleton
     @Provides
-    fun provideOkHttpClient() {
-        val okHttpClient = OkHttpClient.Builder()
+    fun provideOkHttpClient(): OkHttpClient {
+        return OkHttpClient.Builder()
             .addInterceptor(AuthInterceptor())
             .build()
     }
-}
 
-interface ApiInterfaceModule {
-    fun bin
+    @Singleton
+    @Provides
+    fun provideCrateMovieApi(retrofit: Retrofit): GetMovieApi {
+        return retrofit.create(GetMovieApi::class.java)
+    }
 }

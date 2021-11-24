@@ -13,7 +13,7 @@ interface GetMovieApi {
     fun getPopularMovies(
         @Query("language") language: String?,
         @Query("page") page: Int
-    ): Flow<PopularMovieApiModel>
+    ): Deferred<PopularMovieApiModel>
 
 
 }
