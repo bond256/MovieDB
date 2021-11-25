@@ -8,9 +8,15 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.GridLayoutManager
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.ghost.moviedb.R
 import com.ghost.moviedb.base.Result
+import com.ghost.moviedb.base.recycler.MarginItemDecorator
+import com.ghost.moviedb.databinding.ListOfMoviesFragmentBinding
 import com.ghost.moviedb.di.Application
+import com.ghost.moviedb.model.mapApiToItem
 import com.ghost.moviedb.repository.MovieRepository
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.InternalCoroutinesApi
@@ -18,29 +24,51 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class ListOfMoviesFragment: Fragment(R.layout.list_of_movies_fragment) {
+class ListOfMoviesFragment : Fragment(R.layout.list_of_movies_fragment) {
 
-    @Inject lateinit var movieRepository: MovieRepository
-    @Inject lateinit var listOfMoviesViewModelFactory: ViewModelProvider.Factory
+    @Inject
+    lateinit var movieRepository: MovieRepository
+
+    @Inject
+    lateinit var listOfMoviesViewModelFactory: ViewModelProvider.Factory
+
+    private val binding by viewBinding(ListOfMoviesFragmentBinding::bind)
 
     private val listOfMoviesViewModel: ListOfMoviesViewModel by viewModels {
         listOfMoviesViewModelFactory
     }
 
+    private val adapter: ListOfFilmsAdapter by lazy { ListOfFilmsAdapter() }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (requireContext().applicationContext as Application).appComponent.inject(this)
+
         Log.d("qqq", "onViewCreated: $movieRepository")
 
+        initRecycler()
+        listOfMoviesViewModel.loadData()
 
-        GlobalScope.launch {
-            movieRepository.getPopularMovie(page = 1,language = null).collect {
-
-                when(it) {
-                     ->
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+            listOfMoviesViewModel.result.collect { data ->
+                when (data) {
+                    is Result.onLoading -> Log.d("qqq", "loading: ")
+                    is Result.onSuccess -> {
+                        Log.d("qqq", "success: ${data.data}")
+                        adapter.items = adapter.items.toMutableList().apply {
+                            addAll(mapApiToItem(data.data.results))
+                        }
+                    }
+                    is Result.onFailure -> Log.d("qqq", "failure: ${data.exception}")
                 }
             }
         }
+    }
+
+    private fun initRecycler() {
+        binding.recyclerOfFilms.layoutManager = GridLayoutManager(requireContext(), 2)
+        binding.recyclerOfFilms.addItemDecoration(MarginItemDecorator(top = 16, bottom = 16,right = 16))
+        binding.recyclerOfFilms.adapter = adapter
     }
 
 }

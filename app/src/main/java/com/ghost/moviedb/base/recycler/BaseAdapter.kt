@@ -6,7 +6,7 @@ import com.ghost.moviedb.base.autoNotify
 import kotlin.properties.Delegates
 
 abstract class BaseAdapter<T> : RecyclerView.Adapter<BaseViewHolder<T>>() {
-    val items: List<T> by Delegates.observable(emptyList()) { _, oldList, newList ->
+    var items: List<T> by Delegates.observable(emptyList()) { _, oldList, newList ->
         autoNotify(oldList, newList) { old, new -> compare(old, new) }
     }
 
