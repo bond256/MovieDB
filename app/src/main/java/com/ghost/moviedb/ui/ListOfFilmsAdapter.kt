@@ -1,6 +1,7 @@
 package com.ghost.moviedb.ui
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -19,7 +20,7 @@ class ListOfFilmsAdapter : BaseAdapter<ItemFilm>() {
     }
 
     override fun compare(old: ItemFilm, new: ItemFilm): Boolean {
-        return old == new
+        return old.originalTitle == new.originalTitle
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<ItemFilm> {
@@ -28,11 +29,12 @@ class ListOfFilmsAdapter : BaseAdapter<ItemFilm>() {
         )
     }
 
-    inner class FilmViewHolder(val binding: ItemDiscoverFilmsBinding) :
+    inner class FilmViewHolder(private val binding: ItemDiscoverFilmsBinding) :
         BaseViewHolder<ItemFilm>(binding.root) {
         override fun bind(item: ItemFilm, position: Int) {
+            Log.d("qqq", "bind position: $position")
             binding.title.text = item.originalTitle
-            binding.rating.text = item.popularity.toString()
+            binding.rating.text = item.voteAverage.toString()
             binding.languageOfFilm.text = item.originalLanguage
             loadPoster(POSTER_BASE_URL + item.posterPath, binding.posterImage, binding.root.context)
             binding.root.setOnClickListener { listener?.onItemClick(item) }

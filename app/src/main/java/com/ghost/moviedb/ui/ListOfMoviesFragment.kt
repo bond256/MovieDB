@@ -10,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.ghost.moviedb.R
 import com.ghost.moviedb.base.Result
@@ -44,8 +45,6 @@ class ListOfMoviesFragment : Fragment(R.layout.list_of_movies_fragment) {
         super.onViewCreated(view, savedInstanceState)
         (requireContext().applicationContext as Application).appComponent.inject(this)
 
-        Log.d("qqq", "onViewCreated: $movieRepository")
-
         initRecycler()
         listOfMoviesViewModel.loadData()
 
@@ -54,7 +53,6 @@ class ListOfMoviesFragment : Fragment(R.layout.list_of_movies_fragment) {
                 when (data) {
                     is Result.onLoading -> Log.d("qqq", "loading: ")
                     is Result.onSuccess -> {
-                        Log.d("qqq", "success: ${data.data}")
                         adapter.items = adapter.items.toMutableList().apply {
                             addAll(mapApiToItem(data.data.results))
                         }
@@ -66,8 +64,8 @@ class ListOfMoviesFragment : Fragment(R.layout.list_of_movies_fragment) {
     }
 
     private fun initRecycler() {
-        binding.recyclerOfFilms.layoutManager = GridLayoutManager(requireContext(), 2)
-        binding.recyclerOfFilms.addItemDecoration(MarginItemDecorator(top = 16, bottom = 16,right = 16))
+        binding.recyclerOfFilms.layoutManager = GridLayoutManager(requireContext(), 2, RecyclerView.VERTICAL, false)
+        binding.recyclerOfFilms.addItemDecoration(MarginItemDecorator(top = 16, bottom = 16,right = 16, left = 16))
         binding.recyclerOfFilms.adapter = adapter
     }
 

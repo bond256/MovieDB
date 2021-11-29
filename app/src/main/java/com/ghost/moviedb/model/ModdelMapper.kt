@@ -7,7 +7,7 @@ package com.ghost.moviedb.model
             ItemFilm(
                 originalTitle = it.originalTitle,
                 originalLanguage = it.originalLanguage,
-                popularity = it.popularity,
+                voteAverage = it.voteAverage,
                 posterPath = it.posterPath
             )
         }
