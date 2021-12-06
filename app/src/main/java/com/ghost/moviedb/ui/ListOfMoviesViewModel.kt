@@ -18,9 +18,9 @@ class ListOfMoviesViewModel @Inject constructor(
     val result: StateFlow<Result<PopularMovieApiModel>> get() = _result
 
 
-    override fun loadData() {
+    override fun loadData(page: Int) {
         viewModelScope.launch {
-            movieRepository.getPopularMovie(null, 1).collect {
+            movieRepository.getPopularMovie(null, page).collect {
                 _result.value = it
             }
         }

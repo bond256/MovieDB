@@ -2,6 +2,7 @@ package com.ghost.moviedb
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.navigation.findNavController
 import com.ghost.moviedb.ui.ListOfMoviesFragment
 
 class MainActivity : AppCompatActivity() {
@@ -9,10 +10,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        supportFragmentManager.beginTransaction().add(
-            R.id.fragmentContainerView,
-            ListOfMoviesFragment()
-        ).commit()
     }
 
 }

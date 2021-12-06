@@ -20,7 +20,6 @@ class MarginItemDecorator(
                 top = this@MarginItemDecorator.top
             }
             if(parent.getChildAdapterPosition(view) == 1) {
-                Log.d("qqq", "getItemOffsets: ")
                 top = this@MarginItemDecorator.top
             }
             left = this@MarginItemDecorator.left

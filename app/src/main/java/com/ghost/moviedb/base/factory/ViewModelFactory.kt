@@ -1,4 +1,4 @@
-package com.ghost.moviedb.ui
+package com.ghost.moviedb.base.factory
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

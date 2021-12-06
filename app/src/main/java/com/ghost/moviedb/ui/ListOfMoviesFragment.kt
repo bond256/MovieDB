@@ -9,6 +9,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavGraph
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
@@ -17,6 +20,7 @@ import com.ghost.moviedb.base.Result
 import com.ghost.moviedb.base.recycler.MarginItemDecorator
 import com.ghost.moviedb.databinding.ListOfMoviesFragmentBinding
 import com.ghost.moviedb.di.Application
+import com.ghost.moviedb.model.ItemFilm
 import com.ghost.moviedb.model.mapApiToItem
 import com.ghost.moviedb.repository.MovieRepository
 import kotlinx.coroutines.GlobalScope
@@ -25,7 +29,8 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class ListOfMoviesFragment : Fragment(R.layout.list_of_movies_fragment) {
+class ListOfMoviesFragment : Fragment(R.layout.list_of_movies_fragment),
+    ListOfFilmsAdapter.OnItemListener {
 
     @Inject
     lateinit var movieRepository: MovieRepository
@@ -64,9 +69,26 @@ class ListOfMoviesFragment : Fragment(R.layout.list_of_movies_fragment) {
     }
 
     private fun initRecycler() {
-        binding.recyclerOfFilms.layoutManager = GridLayoutManager(requireContext(), 2, RecyclerView.VERTICAL, false)
-        binding.recyclerOfFilms.addItemDecoration(MarginItemDecorator(top = 16, bottom = 16,right = 16, left = 16))
+        binding.recyclerOfFilms.layoutManager =
+            GridLayoutManager(requireContext(), 2, RecyclerView.VERTICAL, false)
+        binding.recyclerOfFilms.addItemDecoration(
+            MarginItemDecorator(
+                top = 16,
+                bottom = 16,
+                right = 16,
+                left = 16
+            )
+        )
         binding.recyclerOfFilms.adapter = adapter
+        adapter.setOnItemListener(this)
+    }
+
+    override fun onItemClick(item: ItemFilm) {
+        findNavController().navigate(
+            ListOfMoviesFragmentDirections.actionListOfMoviesFragmentToDetailsMovieFragment(
+                item.id
+            )
+        )
     }
 
 }
